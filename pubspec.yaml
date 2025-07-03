@@ -1,0 +1,42 @@
+name: bili_sense
+description: "A new Flutter project."
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_blue_plus:
+  permission_handler: ^12.0.0+1
+  get_it: ^8.0.3
+  firebase_core: ^3.14.0
+  firebase_auth: ^5.6.0
+  flutter_bloc: ^9.1.1
+  bloc:
+  go_router: ^15.2.4
+  shared_preferences: ^2.5.3
+  cloud_firestore: ^5.6.0
+  intl: ^0.20.2
+  fl_chart: ^1.0.0
+  google_fonts: ^6.2.1
+  meta:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+  #   - images/a_dot_ham.jpeg
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
