@@ -14,7 +14,7 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> {
 
 
-  final prefs = getIt<SharedPreferenceHelper>();
+  final SharedPreferenceHelper prefs = getIt<SharedPreferenceHelper>();
 
   void checkLoginStatus() {
     final isLoggedIn = prefs.isLoggedIn;

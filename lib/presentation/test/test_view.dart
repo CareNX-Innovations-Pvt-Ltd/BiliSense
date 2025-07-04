@@ -4,7 +4,6 @@ import 'package:bili_sense/core/models/test_model.dart';
 import 'package:bili_sense/core/network/di.dart';
 import 'package:bili_sense/core/service/bluetooth_service.dart';
 import 'package:bili_sense/presentation/test/test_cubit.dart';
-import 'package:bili_sense/presentation/mother_details/mother_details_cubit.dart';
 import 'package:bili_sense/presentation/widget/bilirubin_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -232,6 +231,10 @@ class _TestViewState extends State<TestView> {
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(state.message)));
+                      });
+                      context.pushReplacement(AppRoutes.report, extra: {
+                        'tests': [test],
+                        'motherModel': widget.motherModel,
                       });
                     }
                     return Column(

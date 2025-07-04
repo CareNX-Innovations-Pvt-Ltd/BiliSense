@@ -19,20 +19,21 @@ class LoginCubit extends Cubit<LoginState> {
   final TextEditingController passwordController = TextEditingController();
   final FirebaseFirestore firestore = getIt<FirebaseFirestore>();
 
-
   Future<void> login(String email, String password) async {
     emit(LoginLoading());
     try {
       final user = await _authService.signInWithEmail(email, password);
-      await firestore.collection(AppConstants.userCollection)
+      await firestore
+          .collection(AppConstants.userCollection)
           .where('email', isEqualTo: email)
+          .where('app', isEqualTo: 'bili_sense')
           .get()
           .then((value) {
-        if (value.docs.isNotEmpty) {
-          final userData = value.docs.first.data();
-          prefs.setUserModel(UserModel.fromJson(userData));
-        }
-      });
+            if (value.docs.isNotEmpty) {
+              final userData = value.docs.first.data();
+              prefs.setUserModel(UserModel.fromJson(userData));
+            }
+          });
       if (user != null) {
         prefs.setIsLoggedIn(true);
         emit(LoginSuccess(user.email!));
@@ -47,11 +48,12 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> register(String email, String password, String name) async {
     emit(LoginLoading());
     try {
-      final user = await _authService.register(email, password, );
+      final user = await _authService.register(email, password);
       await firestore.collection(AppConstants.userCollection).add({
         'email': email,
         'name': name,
-        'type':'doctor'
+        'type': 'doctor',
+        'app': 'bili_sense',
       });
       if (user != null) {
         prefs.setIsLoggedIn(true);

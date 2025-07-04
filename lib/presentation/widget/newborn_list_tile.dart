@@ -57,18 +57,7 @@ class NewbornListTile extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
-            //
-            // // Admitted on
-            // Text(
-            //   "Admitted on: $createdAtFormatted",
-            //   style: const TextStyle(fontSize: 14),
-            // ),
-            //
-            // const SizedBox(height: 12),
-
-            // Details box
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

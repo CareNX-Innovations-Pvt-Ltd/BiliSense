@@ -8,11 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt getIt = GetIt.instance;
 
-void setupDependencyInjection() async {
+Future<void>  setupDependencyInjection() async {
+  final prefs = await SharedPreferences.getInstance();
+  getIt.registerSingleton<SharedPreferenceHelper>(SharedPreferenceHelper(prefs));
   getIt.registerSingleton(BleBluetoothService());
   getIt.registerSingleton(FirebaseAuth.instance);
   getIt.registerSingleton(FirebaseFirestore.instance);
   getIt.registerSingleton(AuthService());
-  final prefs = await SharedPreferences.getInstance();
-  getIt.registerSingleton<SharedPreferenceHelper>(SharedPreferenceHelper(prefs));
 }

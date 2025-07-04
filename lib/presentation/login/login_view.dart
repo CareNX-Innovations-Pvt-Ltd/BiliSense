@@ -22,9 +22,9 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    _emailController.text = 'pranav@carenx.com';
-    _passwordController.text = '1234567890';
-    _confirmPasswordController.text = '1234567890';
+    // _emailController.text = 'pranav@carenx.com';
+    // _passwordController.text = '1234567890';
+    // _confirmPasswordController.text = '1234567890';
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -75,7 +75,7 @@ class _LoginViewState extends State<LoginView> {
                         children: [
                           const SizedBox(height: 10),
                           TextField(
-                            controller: _passwordController,
+                            controller: _confirmPasswordController,
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: "Confirm Password",

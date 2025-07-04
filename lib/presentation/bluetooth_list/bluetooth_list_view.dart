@@ -105,11 +105,7 @@ class BluetoothListViewState extends State<BluetoothListView> {
         listener: (context, state) {
           if (state is TestSuccess) {
             context.read<MotherDetailsCubit>().fetchTests(widget.motherModel.motherName);
-            context.pop();
-            context.pushNamed(AppRoutes.report, extra: {
-              'tests': context.read<MotherDetailsCubit>().tests,
-              'motherModel': widget.motherModel,
-            });
+            // context.pop();
           }
         },
         child: Scaffold(

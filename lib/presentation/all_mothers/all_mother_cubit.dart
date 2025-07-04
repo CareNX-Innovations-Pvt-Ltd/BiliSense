@@ -28,7 +28,7 @@ class AllMotherCubit extends Cubit<AllMotherState> {
           await _firestore
               .collection(AppConstants.userCollection)
               .where('type', isEqualTo: 'newborn')
-              .where('doctorName', isEqualTo: doctorName)
+              .where('doctor', isEqualTo: doctorName)
               .orderBy('createdAt', descending: true)
               .get();
 

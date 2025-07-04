@@ -42,6 +42,7 @@ class HomeCubit extends Cubit<HomeState> {
 
       totalTests = await _firestore
           .collection(AppConstants.testsCollection)
+          .where('doctorName', isEqualTo: userModel.name)
           .get()
           .then((value) => value.docs.length);
 
