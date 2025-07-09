@@ -19,10 +19,25 @@ class HomeCubit extends Cubit<HomeState> {
   int totalNewborns = 0;
 
   init() {
-    _fetchRecent();
+    _cacheCalls();
   }
 
-  _fetchRecent() async {
+  _cacheCalls() {
+    if (recentTests.isNotEmpty) {
+      emit(
+        HomeLoaded(
+          recentTests: recentTests,
+          totalTests: totalTests.toString(),
+          totalNewborns: totalNewborns.toString(),
+        ),
+      );
+      return;
+    } else {
+      fetchRecent();
+    }
+  }
+
+  fetchRecent() async {
     emit(HomeLoading());
     UserModel userModel = _prefs.userModel;
     try {
@@ -30,9 +45,9 @@ class HomeCubit extends Cubit<HomeState> {
           await _firestore
               .collection(AppConstants.userCollection)
               .where('type', isEqualTo: 'newborn')
-              .where('doctor', isEqualTo: userModel.name)
+              .where('doctorId', isEqualTo: userModel.id)
               .orderBy('createdAt', descending: true)
-              .limit(2)
+              .limit(3)
               .get();
 
       recentTests =
@@ -42,14 +57,14 @@ class HomeCubit extends Cubit<HomeState> {
 
       totalTests = await _firestore
           .collection(AppConstants.testsCollection)
-          .where('doctorName', isEqualTo: userModel.name)
+          .where('doctorId', isEqualTo: userModel.id)
           .get()
           .then((value) => value.docs.length);
 
       totalNewborns = await _firestore
           .collection(AppConstants.userCollection)
           .where('type', isEqualTo: 'newborn')
-          .where('doctor', isEqualTo: userModel.name)
+          .where('doctorId', isEqualTo: userModel.id)
           .get()
           .then((value) => value.docs.length);
 
@@ -73,6 +88,7 @@ class HomeCubit extends Cubit<HomeState> {
         'dob': motherModel.dob,
         'gender': motherModel.gender,
         'doctor': _prefs.userModel.name,
+        'doctorId': _prefs.userModel.id,
         'weight': motherModel.weight,
         'createdAt': FieldValue.serverTimestamp(),
         'type': 'newborn',

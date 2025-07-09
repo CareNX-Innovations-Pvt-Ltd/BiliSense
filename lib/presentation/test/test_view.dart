@@ -1,14 +1,13 @@
-import 'package:bili_sense/core/constants/app_router.dart';
 import 'package:bili_sense/core/models/mother_model.dart';
 import 'package:bili_sense/core/models/test_model.dart';
 import 'package:bili_sense/core/network/di.dart';
 import 'package:bili_sense/core/service/bluetooth_service.dart';
+import 'package:bili_sense/presentation/mother_details/mother_details_cubit.dart';
 import 'package:bili_sense/presentation/test/test_cubit.dart';
 import 'package:bili_sense/presentation/widget/bilirubin_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:go_router/go_router.dart';
 
 class TestView extends StatefulWidget {
   final BluetoothDevice device;
@@ -45,8 +44,9 @@ class _TestViewState extends State<TestView> {
 
   @override
   void initState() {
-    super.initState();
+    readings.clear();
     _connectToMeter();
+    super.initState();
   }
 
   Future<void> _connectToMeter() async {
@@ -141,7 +141,8 @@ class _TestViewState extends State<TestView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
                       'assets/jaundice_meter.png',
@@ -151,7 +152,7 @@ class _TestViewState extends State<TestView> {
                     Text(
                       connectionStatus,
                       style: const TextStyle(
-                        fontSize: 26,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -199,7 +200,13 @@ class _TestViewState extends State<TestView> {
                         width: double.maxFinite,
                         height: 55,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            readings.clear();
+                            setState(() {
+                             jaundiceData = 0.0;
+                            });
+                            debugPrint('Resetting readings $readings');
+                          },
                           child: Text(
                             'Try Again',
                             style: TextStyle(fontSize: 18),
@@ -210,7 +217,18 @@ class _TestViewState extends State<TestView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                BlocBuilder<TestCubit, TestState>(
+                BlocConsumer<TestCubit, TestState>(
+                  listenWhen: (prev, current) => current is TestSuccess,
+                  listener: (BuildContext context, TestState state) {
+                    if (state is TestSuccess) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                      });
+                      context.read<MotherDetailsCubit>().fetchTests(widget.motherModel.motherName);
+                    }
+                  },
                   builder: (context, state) {
                     if (state is TestLoading) {
                       return const Center(child: CircularProgressIndicator());
@@ -225,17 +243,6 @@ class _TestViewState extends State<TestView> {
                           ),
                         ),
                       );
-                    }
-                    if (state is TestSuccess) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(state.message)));
-                      });
-                      context.pushReplacement(AppRoutes.report, extra: {
-                        'tests': [test],
-                        'motherModel': widget.motherModel,
-                      });
                     }
                     return Column(
                       children: [
@@ -255,7 +262,10 @@ class _TestViewState extends State<TestView> {
                                       widget.motherModel.doctorName ??
                                       'unknown',
                                   readings: readings,
+                                  doctorId: widget.motherModel.doctorId ?? '',
                                 );
+                                bleService.disconnect();
+                                context.read<MotherDetailsCubit>().tests.add(test);
                                 context.read<TestCubit>().saveTest(test);
                               },
                               child: const Text(

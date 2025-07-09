@@ -65,7 +65,9 @@ class BluetoothListViewState extends State<BluetoothListView> {
         final device = result.device;
         final name = device.platformName;
 
-        if (name.isEmpty || _devices.any((d) => d.remoteId == device.remoteId)) continue;
+        if (name.isEmpty || _devices.any((d) => d.remoteId == device.remoteId)) {
+          continue;
+        }
 
         debugPrint("Found device: $name");
 
@@ -104,8 +106,15 @@ class BluetoothListViewState extends State<BluetoothListView> {
       child: BlocListener<TestCubit, TestState>(
         listener: (context, state) {
           if (state is TestSuccess) {
-            context.read<MotherDetailsCubit>().fetchTests(widget.motherModel.motherName);
-            // context.pop();
+            context.pop();
+            context.pop();
+            context.pushNamed(
+              AppRoutes.report,
+              extra: {
+                'tests': context.read<MotherDetailsCubit>().tests,
+                'motherModel': widget.motherModel,
+              },
+            );
           }
         },
         child: Scaffold(
@@ -138,7 +147,7 @@ class BluetoothListViewState extends State<BluetoothListView> {
                 // ),
                 const SizedBox(height: 18),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.28,
                   child: ListView.builder(
                     itemCount: _devices.length,
                     itemBuilder: (context, index) {

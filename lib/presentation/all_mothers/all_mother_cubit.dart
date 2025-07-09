@@ -21,14 +21,14 @@ class AllMotherCubit extends Cubit<AllMotherState> {
 
   /// Fetches all newborns from Firestore and emits the results.
   _fetchAllNewborns() async {
-    String doctorName = prefs.userModel.name;
+    String doctorId = prefs.userModel.id;
     emit(AllMotherInitial());
     try {
       final result =
           await _firestore
               .collection(AppConstants.userCollection)
               .where('type', isEqualTo: 'newborn')
-              .where('doctor', isEqualTo: doctorName)
+              .where('doctorId', isEqualTo: doctorId)
               .orderBy('createdAt', descending: true)
               .get();
 

@@ -78,6 +78,8 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
                 );
               }
               if (state is MotherDetailsSuccess) {
+                List<TestModel> tests = state.tests;
+                debugPrint('Tests for ${widget.motherModel.motherName}: ${tests.length}');
                 if (state.tests.isEmpty) {
                   return Center(
                     child: Text(
@@ -90,7 +92,15 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
                   itemCount: state.tests.length,
                   itemBuilder: (context, index) {
                     final test = state.tests[index];
-                    return TestCard(test: test);
+                    return TestCard(test: test, onTap: (){
+                      context.push(
+                        AppRoutes.report,
+                        extra: {
+                          'motherModel': widget.motherModel,
+                          'tests': tests,
+                        },
+                      );
+                    },);
                   },
                 );
               }

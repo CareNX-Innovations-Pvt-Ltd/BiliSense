@@ -26,7 +26,14 @@ void showMotherRegistrationDialog(BuildContext context) {
                 children: [
                   TextField(
                     controller: nameController,
+                    keyboardType: TextInputType.name,
                     decoration: const InputDecoration(labelText: 'Mother Name'),
+                    maxLength: 50,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^[a-zA-Z\s]+$'),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -138,7 +145,7 @@ void showMotherRegistrationDialog(BuildContext context) {
                       ),
                     );
                     context.pop();
-                    context.read<HomeCubit>().init();
+                    context.read<HomeCubit>().fetchRecent();
                   } else {}
                 },
                 child: const Text('Register'),

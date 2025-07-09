@@ -7,12 +7,10 @@ class BilirubinChart extends StatelessWidget {
 
   const BilirubinChart({super.key, required this.tests});
 
-  // Convert DOB string to age in hours
   double _getAgeInHours(DateTime dob, DateTime createdAt) {
     if (dob.isAfter(createdAt)) return 0;
     return createdAt.difference(dob).inHours.toDouble();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +107,7 @@ class BilirubinChart extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 class SeverityZonePainter extends CustomPainter {
   @override
@@ -136,8 +131,7 @@ class SeverityZonePainter extends CustomPainter {
         chartTopPadding + chartHeight * (1 - bilirubin / maxY);
 
     final paintLow = Paint()..color = Colors.white;
-    final paintLowInt =
-        Paint()..color = Colors.greenAccent.withOpacity(0.5);
+    final paintLowInt = Paint()..color = Colors.greenAccent.withOpacity(0.5);
     final paintHighInt = Paint()..color = Colors.yellow.withOpacity(0.5);
     final paintHigh = Paint()..color = Colors.red.withOpacity(0.5);
 

@@ -1,6 +1,8 @@
 import 'package:bili_sense/core/models/mother_model.dart';
 import 'package:bili_sense/core/models/test_model.dart';
+import 'package:bili_sense/core/util.dart';
 import 'package:bili_sense/presentation/widget/bilirubin_chart.dart';
+import 'package:bili_sense/presentation/widget/legend_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,7 +50,8 @@ class ReportView extends StatelessWidget {
 
   String _formatLastTestDate(DateTime testDate) {
     final now = DateTime.now();
-    final isToday = now.year == testDate.year &&
+    final isToday =
+        now.year == testDate.year &&
         now.month == testDate.month &&
         now.day == testDate.day;
 
@@ -61,45 +64,60 @@ class ReportView extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text("Bilirubin Trend Report")),
+        appBar: AppBar(title: const Text("Bilirubin Trend Report"), elevation: 5,),
         body: Padding(
-          padding: const EdgeInsets.only(right: 20.0, left: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, ),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  height: 30,
-                ),
-                BilirubinChart(tests: tests),
-                SizedBox(
-                  height: 10,
-                ),
-                _buildLegend(),
+                SizedBox(height: 10),
                 _buildPatientInfo(motherModel),
+                SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: BilirubinChart(tests: tests),
+                ),
+                SizedBox(height: 10),
+                _buildLegend(),
                 _buildResultsSection(),
               ],
             ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.black38,
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.share, color: Colors.white),
+                tooltip: "Share Report",
+                onPressed: () async {
+                  Utilities.shareReport(mother: motherModel, tests: tests, context: context);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.print, color: Colors.white),
+                tooltip: "Print Report",
+                onPressed: () async {
+                  Utilities.printReport(mother: motherModel, tests: tests, context: context);
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-
-  double _getAgeInHours(DateTime dob, DateTime createdAt) {
-    if (dob.isAfter(createdAt)) return 0;
-    return createdAt.difference(dob).inHours.toDouble();
-  }
-
-
   Widget _buildPatientInfo(MotherModel motherModel) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -118,10 +136,7 @@ class ReportView extends StatelessWidget {
         children: [
           const Text(
             'Patient Information',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Row(
@@ -130,7 +145,10 @@ class ReportView extends StatelessWidget {
                 child: _buildInfoItem('Mother Name', motherModel.motherName),
               ),
               Expanded(
-                child: _buildInfoItem('Age', '${_getAgeInHours(motherModel.dob, motherModel.createdAt ?? DateTime.now())} hours'),
+                child: _buildInfoItem(
+                  'Age',
+                  '${Utilities.getAgeInHours(motherModel.dob, motherModel.createdAt ?? DateTime.now())} hours',
+                ),
               ),
             ],
           ),
@@ -138,7 +156,10 @@ class ReportView extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildInfoItem('Birth Weight', '${motherModel.weight ?? 0.0} kg'),
+                child: _buildInfoItem(
+                  'Birth Weight',
+                  '${motherModel.weight ?? 0.0} kg',
+                ),
               ),
               Expanded(
                 child: _buildInfoItem('Gender of newborn', motherModel.gender),
@@ -152,7 +173,6 @@ class ReportView extends StatelessWidget {
                 ? _formatLastTestDate(tests.last.createdAt)
                 : 'No test available',
           ),
-
         ],
       ),
     );
@@ -162,19 +182,11 @@ class ReportView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12)),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -187,23 +199,30 @@ class ReportView extends StatelessWidget {
 
     final latestTest = tests.last;
     final latestLevel = latestTest.bilirubinReading;
-    final peakLevel = tests.map((t) => t.bilirubinReading).reduce((a, b) => a > b ? a : b);
+    final peakLevel = tests
+        .map((t) => t.bilirubinReading)
+        .reduce((a, b) => a > b ? a : b);
 
     // Get trend: increasing or decreasing
     String trend = "Stable";
     if (tests.length >= 2) {
       final diff = latestLevel - tests[tests.length - 2].bilirubinReading;
-      trend = diff > 0.5 ? "Increasing" : diff < -0.5 ? "Decreasing" : "Stable";
+      trend =
+          diff > 0.5
+              ? "Increasing"
+              : diff < -0.5
+              ? "Decreasing"
+              : "Stable";
     }
 
     // Get risk level based on age
-    final ageHours = _getAgeInHours(latestTest.dob, latestTest.createdAt);
+    final ageHours = Utilities.getAgeInHours(latestTest.dob, latestTest.createdAt);
     final riskLevel = _getRiskLevel(ageHours, latestLevel);
     final riskColor = _getRiskColor(riskLevel);
     final riskIcon = _getRiskIcon(riskLevel);
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -222,10 +241,7 @@ class ReportView extends StatelessWidget {
         children: [
           const Text(
             'Latest Results',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Row(
@@ -284,7 +300,12 @@ class ReportView extends StatelessWidget {
     );
   }
 
-  Widget _buildResultCard(String label, String value, Color? color, IconData icon) {
+  Widget _buildResultCard(
+    String label,
+    String value,
+    Color? color,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -325,44 +346,15 @@ class ReportView extends StatelessWidget {
         spacing: 42,
         runSpacing: 10,
         children: const [
-          _LegendItem(color: Colors.redAccent, label: "High Risk"),
-          _LegendItem(
+          LegendItem(color: Colors.redAccent, label: "High Risk"),
+          LegendItem(
             color: Colors.orangeAccent,
             label: "High Intermediate Risk",
           ),
-          _LegendItem(
-            color: Colors.greenAccent,
-            label: "Low Intermediate Risk",
-          ),
-          _LegendItem(color: Colors.white, label: "Low Risk"),
+          LegendItem(color: Colors.greenAccent, label: "Low Intermediate Risk"),
+          LegendItem(color: Colors.white, label: "Low Risk"),
         ],
       ),
-    );
-  }
-}
-
-class _LegendItem extends StatelessWidget {
-  final Color color;
-  final String label;
-
-  const _LegendItem({required this.color, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: color,
-            border: Border.all(color: Colors.black),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(label, style: TextStyle(fontSize: 12)),
-      ],
     );
   }
 }

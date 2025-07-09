@@ -22,8 +22,8 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    // _emailController.text = 'pranav@carenx.com';
-    // _passwordController.text = '1234567890';
+    _emailController.text = 'pranav@carenx.com';
+    _passwordController.text = '1234567890';
     // _confirmPasswordController.text = '1234567890';
     return SafeArea(
       child: Scaffold(
@@ -107,8 +107,7 @@ class _LoginViewState extends State<LoginView> {
                                 ? context.read<LoginCubit>().register(
                                   email,
                                   password,
-                              name
-
+                                  name,
                                 )
                                 : context.read<LoginCubit>().login(
                                   email,
@@ -119,11 +118,14 @@ class _LoginViewState extends State<LoginView> {
                         ),
                     Text.rich(
                       TextSpan(
-                        text: signUp ? "Already have an account? ": "Don't have an account? " ,
+                        text:
+                            signUp
+                                ? "Already have an account? "
+                                : "Don't have an account? ",
                         style: TextStyle(color: Colors.black),
                         children: [
                           TextSpan(
-                            text:signUp ? "Login" : "Sign Up",
+                            text: signUp ? "Login" : "Sign Up",
                             recognizer:
                                 TapGestureRecognizer()
                                   ..onTap = () {

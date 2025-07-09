@@ -14,7 +14,7 @@ class MotherDetailsCubit extends Cubit<MotherDetailsState> {
 
   List<TestModel> tests = [];
 
-  fetchTests(String motherName) async {
+  Future<void> fetchTests(String motherName) async {
     emit(MotherDetailsLoading());
     try {
       final result =
@@ -23,9 +23,7 @@ class MotherDetailsCubit extends Cubit<MotherDetailsState> {
               .where('motherName', isEqualTo: motherName)
               .orderBy('createdAt', descending: true)
               .get();
-      print('Fetched tests: ${result.docs.length}');
       tests = result.docs.map((doc) => TestModel.fromJson(doc.data())).toList();
-      print('Fetched tests: ${tests.length}');
       emit(MotherDetailsSuccess(tests));
     } catch (e) {
       emit(MotherDetailsError('Failed to load tests'));

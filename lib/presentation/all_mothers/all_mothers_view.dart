@@ -23,7 +23,6 @@ class _AllMothersViewState extends State<AllMothersView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('All Mothers'), centerTitle: true),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

@@ -25,7 +25,7 @@ class SharedPreferenceHelper {
   UserModel get userModel {
     return _prefs.containsKey(_defaultUser)
         ? UserModel.fromJson(jsonDecode(_prefs.getString(_defaultUser)!))
-        : UserModel(email: '', name: '');
+        : UserModel(email: '', name: '', id: '');
   }
 
   Future<void> setUserModel(UserModel user) async {

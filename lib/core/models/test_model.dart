@@ -7,6 +7,7 @@ class TestModel {
   final double bilirubinReading;
   final DateTime createdAt;
   final String doctorName;
+  final String doctorId;
   final List<double> readings;
 
   TestModel({
@@ -17,6 +18,7 @@ class TestModel {
     required this.createdAt,
     required this.doctorName,
     required this.readings,
+    required this.doctorId,
   });
 
   factory TestModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class TestModel {
               ?.map((e) => (e as num).toDouble())
               .toList() ??
           [],
+      doctorId: json['doctorId'] ?? '',
     );
   }
 
@@ -50,6 +53,7 @@ class TestModel {
       'bilirubinReading': bilirubinReading,
       'doctorName': doctorName,
       'readings' : readings,
+      'doctorId': doctorId,
     };
   }
 }

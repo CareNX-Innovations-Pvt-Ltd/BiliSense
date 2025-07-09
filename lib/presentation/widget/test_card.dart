@@ -15,61 +15,64 @@ class TestCard extends StatelessWidget {
       'dd-MM-yyyy – hh:mm a',
     ).format(test.createdAt);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Header Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Test for ${test.motherName.trim().split(' ')[0]}',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Header Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Test for ${test.motherName.trim().split(' ')[0]}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Chip(
-                    label: Text(
-                      "${test.bilirubinReading.toStringAsFixed(2)} mg/dL",
+                    Chip(
+                      label: Text(
+                        "${test.bilirubinReading.toStringAsFixed(2)} mg/dL",
+                      ),
+                      backgroundColor: _getSeverityColor(test.bilirubinReading),
                     ),
-                    backgroundColor: _getSeverityColor(test.bilirubinReading),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              /// Weight & DOB Info Row
-              Row(
-                children: [
-                  const Icon(Icons.monitor_weight, size: 20),
-                  const SizedBox(width: 6),
-                  Text("Weight: ${test.weight} kg"),
-                  const SizedBox(width: 20),
-                  // const Icon(Icons.cake, color: Colors.grey, size: 20),
-                  // const SizedBox(width: 6),
-                  // Text("DOB: ${test.dob}"),
-                ],
-              ),
-              const SizedBox(height: 12),
+                /// Weight & DOB Info Row
+                Row(
+                  children: [
+                    const Icon(Icons.monitor_weight, size: 20),
+                    const SizedBox(width: 6),
+                    Text("Weight: ${test.weight} kg"),
+                    const SizedBox(width: 20),
+                    // const Icon(Icons.cake, color: Colors.grey, size: 20),
+                    // const SizedBox(width: 6),
+                    // Text("DOB: ${test.dob}"),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              /// Date
-              Row(
-                children: [
-                  const Icon(Icons.access_time, size: 20),
-                  const SizedBox(width: 6),
-                  Text("Admitted on: $formattedDate"),
-                ],
-              ),
-            ],
+                /// Date
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, size: 20),
+                    const SizedBox(width: 6),
+                    Text("Admitted on: $formattedDate"),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

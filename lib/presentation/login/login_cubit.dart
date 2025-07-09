@@ -23,7 +23,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     try {
       final user = await _authService.signInWithEmail(email, password);
-      await firestore
+      final result = await firestore
           .collection(AppConstants.userCollection)
           .where('email', isEqualTo: email)
           .where('app', isEqualTo: 'bili_sense')
@@ -41,27 +41,46 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginFailure("User not found"));
       }
     } catch (e) {
+      debugPrint("Login error: $e");
       emit(LoginFailure(e.toString()));
     }
   }
 
   Future<void> register(String email, String password, String name) async {
     emit(LoginLoading());
+
     try {
+      // Check if doctor already exists
+      final query = await firestore
+          .collection(AppConstants.userCollection)
+          .where('email', isEqualTo: email).where('app', isEqualTo: 'bili_sense')
+          .limit(1)
+          .get();
+
+      if (query.docs.isNotEmpty) {
+        emit(LoginFailure("Email already registered"));
+        return;
+      }
+
       final user = await _authService.register(email, password);
-      await firestore.collection(AppConstants.userCollection).add({
+
+      if (user == null) {
+        emit(LoginFailure("Registration failed"));
+        return;
+      }
+
+      await firestore.collection(AppConstants.userCollection).doc(user.uid).set({
+        'id': user.uid,
         'email': email,
         'name': name,
         'type': 'doctor',
         'app': 'bili_sense',
       });
-      if (user != null) {
-        prefs.setIsLoggedIn(true);
-        prefs.setUserModel(UserModel(name: name, email: email));
-        emit(LoginSuccess(user.email!));
-      } else {
-        emit(LoginFailure("Registration failed"));
-      }
+
+      prefs.setIsLoggedIn(true);
+      prefs.setUserModel(UserModel(name: name, email: email, id: user.uid));
+
+      emit(LoginSuccess(user.email!));
     } catch (e) {
       emit(LoginFailure(e.toString()));
     }

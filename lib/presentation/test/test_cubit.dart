@@ -4,6 +4,7 @@ import 'package:bili_sense/core/network/di.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+
 part 'test_state.dart';
 
 class TestCubit extends Cubit<TestState> {
@@ -21,6 +22,7 @@ class TestCubit extends Cubit<TestState> {
         'weight': test.weight,
         'bilirubinReading': test.bilirubinReading,
         'doctorName': test.doctorName,
+        'doctorId': test.doctorId,
         'readings': test.readings,
       });
       emit(TestSuccess(message: "Test saved successfully!"));
@@ -28,7 +30,4 @@ class TestCubit extends Cubit<TestState> {
       emit(TestError(message: e.toString()));
     }
   }
-
-
-
 }

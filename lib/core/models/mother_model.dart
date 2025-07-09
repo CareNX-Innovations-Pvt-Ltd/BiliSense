@@ -5,6 +5,7 @@ class MotherModel {
   final String contact;
   final String gender;
   final String? doctorName;
+  final String? doctorId;
   final DateTime dob;
   final DateTime? createdAt;
   final String? type;
@@ -17,6 +18,7 @@ class MotherModel {
     required this.gender,
     required this.dob,
     this.doctorName,
+    this.doctorId,
     this.createdAt,
     this.type,
     this.id,
@@ -41,6 +43,7 @@ class MotherModel {
       type: json['type'],
       id: id,
       weight: json['weight'] != null ? (json['weight'] as num).toDouble() : null,
+      doctorId: json['doctorId'] ?? '',
     );
   }
 
@@ -54,6 +57,7 @@ class MotherModel {
       'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : null,
       'type': type,
       'weight': weight,
+      'doctorId': doctorId,
     };
   }
 }
