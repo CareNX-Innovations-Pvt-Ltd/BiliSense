@@ -4,13 +4,15 @@ import 'package:bili_sense/core/util.dart';
 import 'package:bili_sense/presentation/widget/bilirubin_chart.dart';
 import 'package:bili_sense/presentation/widget/legend_item.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ReportView extends StatelessWidget {
   final List<TestModel> tests;
   final MotherModel motherModel;
+  final TestModel? selectedTest;
 
-  const ReportView({super.key, required this.tests, required this.motherModel});
+  const ReportView({super.key, required this.tests, required this.motherModel, this.selectedTest});
 
   String _getRiskLevel(double age, double value) {
     if (age <= 24) {
@@ -69,8 +71,13 @@ class ReportView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Bilirubin Trend Report"),
+          title: const Text("Bilirubin Trend Report", style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.teal,
           elevation: 5,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.pop(),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -85,7 +92,7 @@ class ReportView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 18.0),
-                        child: BilirubinChart(tests: tests),
+                        child: BilirubinChart(tests: tests, highlightedTest: selectedTest,),
                       ),
                       SizedBox(height: 10),
                       _buildLegend(),
@@ -99,13 +106,12 @@ class ReportView extends StatelessWidget {
         bottomNavigationBar: Visibility(
           visible: tests.isNotEmpty,
           child: Container(
-            color: Colors.black38,
-            padding: const EdgeInsets.only(bottom: 2),
+            color: Colors.teal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.share, color: Colors.white),
+                  icon: const Icon(Icons.share, color: Colors.white, size: 30),
                   tooltip: "Share Report",
                   onPressed: () async {
                     Utilities.shareReport(
@@ -116,7 +122,7 @@ class ReportView extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.print, color: Colors.white),
+                  icon: const Icon(Icons.print, color: Colors.white, size: 30),
                   tooltip: "Print Report",
                   onPressed: () async {
                     Utilities.printReport(

@@ -75,7 +75,8 @@ final GoRouter appRouter = GoRouter(
         final model = state.extra as Map<String, dynamic>;
         final List<TestModel> tests = model['tests'] ?? [];
         final MotherModel motherModel = model['motherModel'] as MotherModel;
-        return ReportView(tests: tests, motherModel: motherModel);
+        final TestModel? selectedTest = model['selectedTest'] as TestModel?;
+        return ReportView(tests: tests, motherModel: motherModel, selectedTest: selectedTest,);
       },
     ),
     GoRoute(

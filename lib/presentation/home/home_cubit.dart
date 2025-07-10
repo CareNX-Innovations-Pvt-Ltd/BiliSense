@@ -73,11 +73,12 @@ class HomeCubit extends Cubit<HomeState> {
         'contact': motherModel.contact,
         'dob': motherModel.dob,
         'gender': motherModel.gender,
-        'doctor': _prefs.userModel.name,
-        'doctorId': _prefs.userModel.id,
+        'doctor': motherModel.doctorName,
+        'doctorId': motherModel.doctorId,
         'weight': motherModel.weight,
         'createdAt': FieldValue.serverTimestamp(),
         'type': 'newborn',
+        'apgarScore': motherModel.apgarScore,
       });
       emit(
         HomeLoaded(
@@ -86,6 +87,7 @@ class HomeCubit extends Cubit<HomeState> {
           totalNewborns: recentTests.length.toString(),
         ),
       );
+      emit(HomeNavigationState(motherModel: motherModel));
     } catch (e) {
       emit(HomeError(message: e.toString()));
     }

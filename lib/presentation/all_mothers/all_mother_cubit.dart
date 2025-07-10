@@ -42,4 +42,20 @@ class AllMotherCubit extends Cubit<AllMotherState> {
       emit(AllMotherError(message: e.toString()));
     }
   }
+
+  /// Searches mothers by name and emits the results.
+  void searchMothers(String query) {
+    if (query.isEmpty) {
+      emit(AllMotherSuccess(mothers: recentTests));
+      return;
+    }
+
+    final filteredMothers = recentTests
+        .where((mother) => mother.motherName.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    emit(AllMotherSuccess(mothers: filteredMothers));
+  }
+
+
 }

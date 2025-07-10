@@ -4,8 +4,9 @@ import 'package:bili_sense/core/models/test_model.dart';
 
 class BilirubinChart extends StatelessWidget {
   final List<TestModel> tests;
+  final TestModel? highlightedTest;
 
-  const BilirubinChart({super.key, required this.tests});
+  const BilirubinChart({super.key, required this.tests, this.highlightedTest});
 
   double _getAgeInHours(DateTime dob, DateTime createdAt) {
     if (dob.isAfter(createdAt)) return 0;
@@ -20,6 +21,12 @@ class BilirubinChart extends StatelessWidget {
             return FlSpot(age, test.bilirubinReading);
           }).toList()
           ..sort((a, b) => a.x.compareTo(b.x));
+
+    FlSpot? highlightedSpot;
+    if (highlightedTest != null) {
+      final age = _getAgeInHours(highlightedTest!.dob, highlightedTest!.createdAt);
+      highlightedSpot = FlSpot(age, highlightedTest!.bilirubinReading);
+    }
 
     return AspectRatio(
       aspectRatio: 1,
@@ -43,6 +50,25 @@ class BilirubinChart extends StatelessWidget {
                   dotData: FlDotData(show: true),
                   curveSmoothness: 0.2,
                 ),
+
+                if (highlightedSpot != null)
+                  LineChartBarData(
+                    spots: [highlightedSpot],
+                    isCurved: false,
+                    color: Colors.red,
+                    barWidth: 0, // no line
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 3,
+                          color: Color(0xffEB1882),
+                          strokeWidth: 2,
+                          strokeColor: Color(0xffEB1882),
+                        );
+                      },
+                    ),
+                  ),
               ],
 
               // Axes Titles

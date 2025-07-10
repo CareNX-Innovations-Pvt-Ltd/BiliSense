@@ -50,6 +50,7 @@ class _TestViewState extends State<TestView> {
   }
 
   Future<void> _connectToMeter() async {
+    bleService.jaundiceValues.drain();
     try {
       await bleService.connectToDevice(widget.device);
       setState(() => connectionStatus = "Connected");
@@ -202,6 +203,7 @@ class _TestViewState extends State<TestView> {
                         child: ElevatedButton(
                           onPressed: () {
                             readings.clear();
+                            bleService.jaundiceValues.drain();
                             setState(() {
                              jaundiceData = 0.0;
                             });

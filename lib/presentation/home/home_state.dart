@@ -20,3 +20,8 @@ final class HomeError extends HomeState {
 
   HomeError({required this.message});
 }
+final class HomeNavigationState extends HomeState {
+  final MotherModel motherModel;
+
+  HomeNavigationState({required this.motherModel});
+}

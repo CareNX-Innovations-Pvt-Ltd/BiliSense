@@ -36,10 +36,11 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.teal,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.motherModel.motherName),
+              Text(widget.motherModel.motherName, style: TextStyle(color: Colors.white)),
               InkWell(
                 onTap: () {
                   context.push(
@@ -52,13 +53,13 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
                 },
                 child: Text(
                   'View Report',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
                 ),
               ),
             ],
           ),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => context.pop(),
           ),
 
@@ -98,6 +99,7 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
                         extra: {
                           'motherModel': widget.motherModel,
                           'tests': tests,
+                          'selectedTest': test,
                         },
                       );
                     },);
@@ -113,20 +115,30 @@ class _MotherDetailsViewState extends State<MotherDetailsView> {
             },
           ),
         ),
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            context.push(
-              AppRoutes.bluetooth,
-              extra: {'motherModel': widget.motherModel, 'tests': tests},
-            );
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.launch),
-              const SizedBox(width: 8),
-              const Text('New Test'),
-            ],
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal.shade700,
+              fixedSize: Size(double.maxFinite, 55),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            onPressed: () {
+              context.push(
+                AppRoutes.bluetooth,
+                extra: {'motherModel': widget.motherModel, 'tests': tests},
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.launch, size: 20,color: Colors.white,),
+                const SizedBox(width: 8),
+                const Text('New Test', style: TextStyle(color: Colors.white, fontSize: 18),),
+              ],
+            ),
           ),
         ),
       ),

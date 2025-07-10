@@ -25,28 +25,39 @@ class _AllMothersViewState extends State<AllMothersView> {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<AllMotherCubit, AllMotherState>(
-            builder: (context, state) {
-              if (state is AllMotherLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is AllMotherError) {
-                return Center(
-                  child: Text(
-                    state.message,
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Search Mothers',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              }
-              if (state is AllMotherSuccess) {
-                if (state.mothers.isEmpty) {
-                  return const Center(
-                    child: Text('No mothers found.'),
-                  );
-                }
-
-                return Column(
-                  children: [
-                    Expanded(
+                  suffixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                ),
+                onChanged: (value) {
+                  context.read<AllMotherCubit>().searchMothers(value);
+                },
+              ),
+              BlocBuilder<AllMotherCubit, AllMotherState>(
+                builder: (context, state) {
+                  if (state is AllMotherLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is AllMotherError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                      ),
+                    );
+                  }
+                  if (state is AllMotherSuccess) {
+                    if (state.mothers.isEmpty) {
+                      return const Center(
+                        child: Text('No mothers found.'),
+                      );
+                    }
+                    return Expanded(
                       child: ListView.builder(
                         itemCount: state.mothers.length,
                         itemBuilder: (context, index) {
@@ -62,12 +73,12 @@ class _AllMothersViewState extends State<AllMothersView> {
                           );
                         },
                       ),
-                    ),
-                  ],
-                );
-              }
-              return const Center(child: Text('No mothers found.'));
-            },
+                    );
+                  }
+                  return const Center(child: Text('No mothers found.'));
+                },
+              ),
+            ],
           ),
         ),
       ),

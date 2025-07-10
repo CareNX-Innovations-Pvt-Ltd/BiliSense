@@ -69,14 +69,18 @@ class BluetoothListViewState extends State<BluetoothListView> {
           continue;
         }
 
-        debugPrint("Found device: $name");
+        // ✅ Only allow devices with 'L11C' in their name
+        if (name.contains('L11C')) {
+          debugPrint("Found matching device: $name");
 
-        setState(() {
-          _devices.add(device);
-        });
+          setState(() {
+            _devices.add(device);
+          });
+        }
       }
     });
   }
+
 
   void _clearDeviceList() {
     setState(() {
