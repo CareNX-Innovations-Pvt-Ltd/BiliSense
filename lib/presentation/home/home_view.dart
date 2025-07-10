@@ -24,6 +24,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Home View built with user: ${prefs.userModel.name}');
     return SafeArea(
       child: Scaffold(
         body: LayoutBuilder(
@@ -43,7 +44,6 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     );
                   }
-                  if (state is HomeLoaded && state.recentTests.isNotEmpty) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -71,11 +71,11 @@ class _HomeViewState extends State<HomeView> {
                                   children: [
                                     InfoTile(
                                       title: 'Total Tests Taken',
-                                      value: state.totalTests,
+                                      value: context.read<HomeCubit>().totalTests.toString(),
                                     ),
                                     InfoTile(
                                       title: 'Newborns',
-                                      value: state.totalNewborns,
+                                      value: context.read<HomeCubit>().totalNewborns.toString(),
                                     ),
                                   ],
                                 ),
@@ -160,13 +160,7 @@ class _HomeViewState extends State<HomeView> {
                         // ),
                       ],
                     );
-                  }
-                  return const Center(
-                    child: Text(
-                      'No records found.',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  );
+
                 },
               ),
             );

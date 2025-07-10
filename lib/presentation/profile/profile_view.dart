@@ -96,8 +96,9 @@ class ProfileView extends StatelessWidget {
               context,
               icon: Icons.login_outlined,
               title: 'Logout',
-              onTap: () {
-                getIt<FirebaseAuth>().signOut();
+              onTap: () async {
+                await getIt<SharedPreferenceHelper>().clearAll();
+                await getIt<FirebaseAuth>().signOut();
                 context.goNamed(AppRoutes.login);
               },
             ),

@@ -9,6 +9,7 @@ void showMotherRegistrationDialog(BuildContext context) {
   final nameController = TextEditingController();
   final contactController = TextEditingController();
   final weightController = TextEditingController();
+  final apgarController = TextEditingController();
   DateTime? selectedDOB;
   String gender = 'Male';
 
@@ -19,7 +20,7 @@ void showMotherRegistrationDialog(BuildContext context) {
         builder: (context, setState) {
           return AlertDialog(
             insetPadding: const EdgeInsets.all(10),
-            title: const Text('Register Mother and Newborn'),
+            title: const Text('Register Mother & Newborn'),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -27,7 +28,7 @@ void showMotherRegistrationDialog(BuildContext context) {
                   TextField(
                     controller: nameController,
                     keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(labelText: 'Mother Name'),
+                    decoration: const InputDecoration(labelText: 'Mother Name', counterText: ''),
                     maxLength: 50,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
@@ -44,6 +45,17 @@ void showMotherRegistrationDialog(BuildContext context) {
                       counterText: '',
                     ),
                     maxLength: 10,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: apgarController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'APGAR Score',
+                      counterText: '',
+                    ),
+                    maxLength: 5,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(height: 8),
@@ -119,7 +131,6 @@ void showMotherRegistrationDialog(BuildContext context) {
                     ],
                     decoration: const InputDecoration(
                       labelText: 'Weight (kg)',
-                      border: OutlineInputBorder(),
                     ),
                   ),
                 ],
@@ -142,6 +153,7 @@ void showMotherRegistrationDialog(BuildContext context) {
                         dob: selectedDOB!,
                         gender: gender,
                         weight: double.tryParse(weightController.text.trim()),
+                        apgarScore: int.tryParse(apgarController.text.trim()),
                       ),
                     );
                     context.pop();

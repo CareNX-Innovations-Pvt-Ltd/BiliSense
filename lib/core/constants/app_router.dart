@@ -3,7 +3,7 @@ import 'package:bili_sense/core/models/test_model.dart';
 import 'package:bili_sense/presentation/all_mothers/all_mothers_view.dart';
 import 'package:bili_sense/presentation/bluetooth_list/bluetooth_list_view.dart';
 import 'package:bili_sense/presentation/home/home_view.dart';
-import 'package:bili_sense/presentation/home/main_nav_view.dart';
+import 'package:bili_sense/main_nav_view.dart';
 import 'package:bili_sense/presentation/login/login_view.dart';
 import 'package:bili_sense/presentation/mother_details/mother_details_view.dart';
 import 'package:bili_sense/presentation/report/report_view.dart';

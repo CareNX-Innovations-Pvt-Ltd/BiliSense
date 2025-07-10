@@ -68,47 +68,66 @@ class ReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text("Bilirubin Trend Report"), elevation: 5,),
+        appBar: AppBar(
+          title: const Text("Bilirubin Trend Report"),
+          elevation: 5,
+        ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
             child: Column(
               children: [
                 SizedBox(height: 10),
                 _buildPatientInfo(motherModel),
                 SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: BilirubinChart(tests: tests),
-                ),
-                SizedBox(height: 10),
-                _buildLegend(),
+                if (tests.isNotEmpty)
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 18.0),
+                        child: BilirubinChart(tests: tests),
+                      ),
+                      SizedBox(height: 10),
+                      _buildLegend(),
+                    ],
+                  ),
                 _buildResultsSection(),
               ],
             ),
           ),
         ),
-        bottomNavigationBar: Container(
-          color: Colors.black38,
-          padding: const EdgeInsets.only(bottom: 2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.share, color: Colors.white),
-                tooltip: "Share Report",
-                onPressed: () async {
-                  Utilities.shareReport(mother: motherModel, tests: tests, context: context);
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.print, color: Colors.white),
-                tooltip: "Print Report",
-                onPressed: () async {
-                  Utilities.printReport(mother: motherModel, tests: tests, context: context);
-                },
-              ),
-            ],
+        bottomNavigationBar: Visibility(
+          visible: tests.isNotEmpty,
+          child: Container(
+            color: Colors.black38,
+            padding: const EdgeInsets.only(bottom: 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.share, color: Colors.white),
+                  tooltip: "Share Report",
+                  onPressed: () async {
+                    Utilities.shareReport(
+                      mother: motherModel,
+                      tests: tests,
+                      context: context,
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.print, color: Colors.white),
+                  tooltip: "Print Report",
+                  onPressed: () async {
+                    Utilities.printReport(
+                      mother: motherModel,
+                      tests: tests,
+                      context: context,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -216,7 +235,10 @@ class ReportView extends StatelessWidget {
     }
 
     // Get risk level based on age
-    final ageHours = Utilities.getAgeInHours(latestTest.dob, latestTest.createdAt);
+    final ageHours = Utilities.getAgeInHours(
+      latestTest.dob,
+      latestTest.createdAt,
+    );
     final riskLevel = _getRiskLevel(ageHours, latestLevel);
     final riskColor = _getRiskColor(riskLevel);
     final riskIcon = _getRiskIcon(riskLevel);

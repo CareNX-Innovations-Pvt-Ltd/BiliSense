@@ -25,22 +25,28 @@ class _AllMothersViewState extends State<AllMothersView> {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              BlocBuilder<AllMotherCubit, AllMotherState>(
-                builder: (context, state) {
-                  if (state is AllMotherLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is AllMotherError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                      ),
-                    );
-                  }
-                  if (state is AllMotherSuccess) {
-                    return Expanded(
+          child: BlocBuilder<AllMotherCubit, AllMotherState>(
+            builder: (context, state) {
+              if (state is AllMotherLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is AllMotherError) {
+                return Center(
+                  child: Text(
+                    state.message,
+                  ),
+                );
+              }
+              if (state is AllMotherSuccess) {
+                if (state.mothers.isEmpty) {
+                  return const Center(
+                    child: Text('No mothers found.'),
+                  );
+                }
+
+                return Column(
+                  children: [
+                    Expanded(
                       child: ListView.builder(
                         itemCount: state.mothers.length,
                         itemBuilder: (context, index) {
@@ -56,12 +62,12 @@ class _AllMothersViewState extends State<AllMothersView> {
                           );
                         },
                       ),
-                    );
-                  }
-                  return const Center(child: Text('No mothers found.'));
-                },
-              ),
-            ],
+                    ),
+                  ],
+                );
+              }
+              return const Center(child: Text('No mothers found.'));
+            },
           ),
         ),
       ),

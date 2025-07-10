@@ -19,23 +19,9 @@ class HomeCubit extends Cubit<HomeState> {
   int totalNewborns = 0;
 
   init() {
-    _cacheCalls();
+    fetchRecent();
   }
 
-  _cacheCalls() {
-    if (recentTests.isNotEmpty) {
-      emit(
-        HomeLoaded(
-          recentTests: recentTests,
-          totalTests: totalTests.toString(),
-          totalNewborns: totalNewborns.toString(),
-        ),
-      );
-      return;
-    } else {
-      fetchRecent();
-    }
-  }
 
   fetchRecent() async {
     emit(HomeLoading());
