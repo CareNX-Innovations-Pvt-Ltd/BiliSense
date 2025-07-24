@@ -5,6 +5,8 @@ class BilirubinCircularCard extends StatelessWidget {
   final int completedTests; // 1 to 3
   final String severityLabel;
   final IconData icon;
+  final bool connectionStatus;
+  final Function onTap;
 
   const BilirubinCircularCard({
     super.key,
@@ -12,11 +14,13 @@ class BilirubinCircularCard extends StatelessWidget {
     required this.completedTests,
     required this.severityLabel,
     this.icon = Icons.water_drop_rounded,
+    required this.connectionStatus,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final double progress = (completedTests / 3).clamp(0.0, 1.0);
+    // final double progress = (completedTests / 3).clamp(0.0, 1.0);
     final Color severityColor = _getSeverityColor(bilirubinReading);
 
     return Stack(
@@ -39,45 +43,60 @@ class BilirubinCircularCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                bilirubinReading.toStringAsFixed(2),
-                style: TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.bold,
-                  color: severityColor,
+          child: Visibility(
+            visible: connectionStatus,
+            replacement: Padding(
+              padding: const EdgeInsets.only(bottom: 18.0),
+              child: Column(
+                children: [
+                  IconButton(onPressed: () => onTap(), icon: Icon(Icons.replay, size: 80,)),
+                  Text('Retry', style: TextStyle(fontSize: 22),)
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  bilirubinReading.toStringAsFixed(2),
+                  style: TextStyle(
+                    fontSize: 38,
+                    fontWeight: FontWeight.bold,
+                    color: severityColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              const Text("mg/dL", style: TextStyle(fontSize: 18)),
-              const SizedBox(height: 8),
-              Text(
-                severityLabel,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: severityColor,
+                const SizedBox(height: 4),
+                const Text("mg/dL", style: TextStyle(fontSize: 18)),
+                const SizedBox(height: 8),
+                Text(
+                  severityLabel,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: severityColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "$completedTests of 3 Tests",
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  "$completedTests of 3 Tests",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
           ),
         ),
-        Positioned(
-          top: 0,
-          child: CircleAvatar(
-            radius: 32,
-            backgroundColor: Colors.white,
+        Visibility(
+          visible: connectionStatus,
+          child: Positioned(
+            top: 0,
             child: CircleAvatar(
-              radius: 28,
-              backgroundColor: severityColor,
-              child: Icon(icon, color: Colors.white, size: 28),
+              radius: 32,
+              backgroundColor: Colors.white,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: severityColor,
+                child: Icon(icon, color: Colors.white, size: 28),
+              ),
             ),
           ),
         ),

@@ -30,6 +30,7 @@ class _AllMothersViewState extends State<AllMothersView> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Search Mothers',
+                  contentPadding: EdgeInsets.all(12),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

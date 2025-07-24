@@ -172,7 +172,7 @@ class ReportView extends StatelessWidget {
               Expanded(
                 child: _buildInfoItem(
                   'Age',
-                  '${Utilities.getAgeInHours(motherModel.dob, motherModel.createdAt ?? DateTime.now())} hours',
+                  '${Utilities.getAgeInHours(motherModel.dob, DateTime.now())} hours',
                 ),
               ),
             ],
